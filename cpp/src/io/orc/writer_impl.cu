@@ -510,12 +510,12 @@ template <typename T>
 size_t max_varint_size()
 {
   // varint encodes 7 bits in each byte
-  return cudf::util::div_rounding_up_unsafe(sizeof(T) * 8, 7);
+  return cudf::detail::div_rounding_up_unsafe(sizeof(T) * 8, 7);
 }
 
 size_t rle_stream_size(TypeKind kind, size_t count)
 {
-  using cudf::util::div_rounding_up_unsafe;
+  using cudf::detail::div_rounding_up_unsafe;
   constexpr auto byte_rle_max_len = 128;
   switch (kind) {
     case TypeKind::BOOLEAN:
@@ -2059,7 +2059,7 @@ hostdevice_2dvector<rowgroup_rows> calculate_rowgroup_bounds(orc_table_view cons
                                                              cuda::stream_ref stream)
 {
   auto const num_rowgroups =
-    cudf::util::div_rounding_up_unsafe<size_t, size_t>(orc_table.num_rows(), rowgroup_size);
+    cudf::detail::div_rounding_up_unsafe<size_t, size_t>(orc_table.num_rows(), rowgroup_size);
 
   hostdevice_2dvector<rowgroup_rows> rowgroup_bounds(
     num_rowgroups, orc_table.num_columns(), stream);

@@ -1355,7 +1355,7 @@ void compact_orc_data_streams(device_2dspan<stripe_stream> strm_desc,
     num_chunks, stream, cudf::get_current_device_resource_ref());
 
   auto const num_blocks =
-    cudf::util::div_rounding_up_unsafe(num_stripes, compact_streams_block_size) *
+    cudf::detail::div_rounding_up_unsafe(num_stripes, compact_streams_block_size) *
     strm_desc.size().second;
   init_batched_memcpy_kernel<<<num_blocks, compact_streams_block_size, 0, stream.get()>>>(
     strm_desc, enc_streams, srcs, dsts, lengths);

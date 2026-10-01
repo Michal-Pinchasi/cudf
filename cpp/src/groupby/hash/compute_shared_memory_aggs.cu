@@ -131,12 +131,12 @@ __device__ void calculate_columns_to_aggregate(cudf::size_type& col_start,
   cudf::size_type bytes_allocated = 0;
 
   auto const valid_col_size =
-    cudf::util::round_up_safe(static_cast<cudf::size_type>(sizeof(bool) * cardinality), ALIGNMENT);
+    cudf::detail::round_up_safe(static_cast<cudf::size_type>(sizeof(bool) * cardinality), ALIGNMENT);
 
   while (bytes_allocated < total_agg_size && col_end < output_size) {
     auto const col_idx = col_end;
     auto const next_col_size =
-      cudf::util::round_up_safe(cudf::type_dispatcher<cudf::dispatch_storage_type>(
+      cudf::detail::round_up_safe(cudf::type_dispatcher<cudf::dispatch_storage_type>(
                                   output_values.column(col_idx).type(), size_of_functor{}) *
                                   cardinality,
                                 ALIGNMENT);
@@ -356,12 +356,12 @@ CUDF_KERNEL void single_pass_shmem_aggs_kernel(cudf::size_type num_rows,
 size_type get_available_shared_memory_size(cudf::size_type grid_size)
 {
   auto const active_blocks_per_sm =
-    cudf::util::div_rounding_up_safe(grid_size, cudf::detail::num_multiprocessors());
+    cudf::detail::div_rounding_up_safe(grid_size, cudf::detail::num_multiprocessors());
 
   size_t dynamic_shmem_size = 0;
   CUDF_CUDA_TRY(cudaOccupancyAvailableDynamicSMemPerBlock(
     &dynamic_shmem_size, single_pass_shmem_aggs_kernel, active_blocks_per_sm, GROUPBY_BLOCK_SIZE));
-  return cudf::util::round_down_safe(static_cast<cudf::size_type>(0.5 * dynamic_shmem_size),
+  return cudf::detail::round_down_safe(static_cast<cudf::size_type>(0.5 * dynamic_shmem_size),
                                      ALIGNMENT);
 }
 

@@ -2193,12 +2193,12 @@ auto convert_table_to_parquet_data(table_input_metadata& table_meta,
   cuda::device_buffer<std::uint8_t> uncomp_bfr(
     stream,
     cudf::get_current_device_resource_ref(),
-    cudf::util::round_up_safe(max_uncomp_bfr_size, BUFFER_PADDING_MULTIPLE),
+    cudf::detail::round_up_safe(max_uncomp_bfr_size, BUFFER_PADDING_MULTIPLE),
     cuda::no_init);
   cuda::device_buffer<std::uint8_t> comp_bfr(
     stream,
     cudf::get_current_device_resource_ref(),
-    cudf::util::round_up_safe(max_comp_bfr_size, BUFFER_PADDING_MULTIPLE),
+    cudf::detail::round_up_safe(max_comp_bfr_size, BUFFER_PADDING_MULTIPLE),
     cuda::no_init);
 
   cuda::device_buffer<std::uint8_t> col_idx_bfr(
