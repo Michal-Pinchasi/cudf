@@ -319,11 +319,11 @@ struct rle_stream {
     if (is_literal_run(run.level_run)) {
       // from the parquet spec: literal runs always come in multiples of 8 values.
       run.size = (run.level_run >> 1) * 8;
-      run_bytes += util::div_rounding_up_unsafe(run.size * level_bits, 8);
+      run_bytes += cudf::detail::div_rounding_up_unsafe(run.size * level_bits, 8);
     } else {
       // repeated value run
       run.size = (run.level_run >> 1);
-      run_bytes += util::div_rounding_up_unsafe(level_bits, 8);
+      run_bytes += cudf::detail::div_rounding_up_unsafe(level_bits, 8);
     }
 
     return run_bytes;

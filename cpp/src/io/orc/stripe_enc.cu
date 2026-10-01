@@ -1164,8 +1164,8 @@ CUDF_KERNEL void __launch_bounds__(256)
   __shared__ __align__(16) stripe_stream ss;
   __shared__ uint8_t* uncomp_base_g;
 
-  auto const padded_block_header_size = util::round_up_unsafe(block_header_size, comp_block_align);
-  auto const padded_comp_block_size   = util::round_up_unsafe(max_comp_blk_size, comp_block_align);
+  auto const padded_block_header_size = cudf::detail::round_up_unsafe(block_header_size, comp_block_align);
+  auto const padded_comp_block_size   = cudf::detail::round_up_unsafe(max_comp_blk_size, comp_block_align);
 
   auto const stripe_id = blockIdx.x / strm_desc.size().second;
   auto const stream_id = blockIdx.x % strm_desc.size().second;

@@ -15,7 +15,7 @@ grid_1d::grid_1d(thread_index_type overall_num_elements,
                  thread_index_type elements_per_thread)
   : num_threads_per_block(num_threads_per_block),
     num_blocks(
-      util::div_rounding_up_safe(overall_num_elements, elements_per_thread * num_threads_per_block))
+      cudf::detail::div_rounding_up_safe(overall_num_elements, elements_per_thread * num_threads_per_block))
 {
   CUDF_EXPECTS(num_threads_per_block > 0, "num_threads_per_block must be > 0");
   CUDF_EXPECTS(num_blocks > 0, "num_blocks must be > 0");
