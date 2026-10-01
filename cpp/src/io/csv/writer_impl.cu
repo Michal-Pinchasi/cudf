@@ -137,7 +137,7 @@ void write_compressed_to_sink(data_sink* out_sink,
   std::transform_inclusive_scan(
     h_inputs.begin(), h_inputs.end(), out_offsets.begin() + 1, std::plus{}, [&](auto const& input) {
       return cudf::detail::round_up_safe(io::detail::max_compressed_size(compression, input.size()),
-                                       alignment);
+                                         alignment);
     });
   rmm::device_uvector<uint8_t> comp_buffer(out_offsets.back(), stream);
 

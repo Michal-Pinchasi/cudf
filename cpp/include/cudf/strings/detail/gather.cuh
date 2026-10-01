@@ -270,7 +270,7 @@ std::unique_ptr<cudf::column> gather(strings_column_view const& strings,
     constexpr int max_threadblocks = 65536;
     auto const grid_size =
       min(cudf::detail::div_rounding_up_safe(static_cast<int64_t>(output_count),
-                                           static_cast<int64_t>(warps_per_threadblock)),
+                                             static_cast<int64_t>(warps_per_threadblock)),
           static_cast<int64_t>(max_threadblocks));
     gather_chars_fn_string_parallel<<<grid_size,
                                       warps_per_threadblock * cudf::detail::warp_size,

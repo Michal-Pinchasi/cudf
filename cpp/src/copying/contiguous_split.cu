@@ -1060,7 +1060,8 @@ struct packed_split_indices_and_src_buf_info {
                                         cudf::size_type num_src_bufs,
                                         cuda::stream_ref stream,
                                         rmm::device_async_resource_ref temp_mr)
-    : indices_size(cudf::detail::round_up_safe((num_partitions + 1) * sizeof(int64_t), split_align)),
+    : indices_size(
+        cudf::detail::round_up_safe((num_partitions + 1) * sizeof(int64_t), split_align)),
       src_buf_info_size(
         cudf::detail::round_up_safe(num_src_bufs * sizeof(src_buf_info), split_align)),
       // host-side
@@ -1123,7 +1124,8 @@ struct packed_partition_buf_size_and_dst_buf_info {
                                              cuda::stream_ref stream,
                                              rmm::device_async_resource_ref temp_mr)
     : stream(stream),
-      buf_sizes_size{cudf::detail::round_up_safe(num_partitions * sizeof(std::size_t), split_align)},
+      buf_sizes_size{
+        cudf::detail::round_up_safe(num_partitions * sizeof(std::size_t), split_align)},
       dst_buf_info_size{cudf::detail::round_up_safe(num_bufs * sizeof(dst_buf_info), split_align)},
       // host-side
       h_buf_sizes_and_dst_info{
@@ -1775,7 +1777,8 @@ std::unique_ptr<chunk_iteration_state> compute_batches(int num_bufs,
 
         // The number of batches we want to subdivide this buffer into
         std::size_t const num_batches = cuda::std::max(
-          std::size_t{1}, cudf::detail::round_up_unsafe(bytes, desired_batch_size) / desired_batch_size);
+          std::size_t{1},
+          cudf::detail::round_up_unsafe(bytes, desired_batch_size) / desired_batch_size);
 
         // NOTE: leaving batch size as a separate parameter for future tuning
         // possibilities, even though in the current implementation it will be a

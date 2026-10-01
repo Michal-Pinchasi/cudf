@@ -60,7 +60,7 @@ std::size_t bitmask_allocation_size_bytes(size_type number_of_bits, std::size_t 
 size_type num_bitmask_words(size_type number_of_bits)
 {
   return cudf::detail::div_rounding_up_safe<size_type>(number_of_bits,
-                                                     detail::size_in_bits<bitmask_type>());
+                                                       detail::size_in_bits<bitmask_type>());
 }
 
 namespace detail {

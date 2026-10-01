@@ -1789,8 +1789,9 @@ auto convert_table_to_parquet_data(table_input_metadata& table_meta,
                    [&](auto const& column) { return column_size(column, stream); });
 
     // adjust global fragment size if a single fragment will overrun a rowgroup
-    auto const table_size  = std::reduce(column_sizes.begin(), column_sizes.end());
-    auto const avg_row_len = cudf::detail::div_rounding_up_safe<size_t>(table_size, input.num_rows());
+    auto const table_size = std::reduce(column_sizes.begin(), column_sizes.end());
+    auto const avg_row_len =
+      cudf::detail::div_rounding_up_safe<size_t>(table_size, input.num_rows());
     if (avg_row_len > 0) {
       // Ensure `rg_frag_size` is not bigger than size_type::max for default max_row_group_size
       // value (=uint64::max) to avoid a sign overflow when comparing
@@ -1809,10 +1810,11 @@ auto convert_table_to_parquet_data(table_input_metadata& table_meta,
     // compromise at smoothing things out without getting fragment sizes too small.
     auto frag_size_fn = [&](auto const& col, size_t col_size) {
       int const target_frags_per_page = col.is_fixed_width() ? 1 : 4;
-      auto const avg_len =
-        target_frags_per_page * cudf::detail::div_rounding_up_safe<size_t>(col_size, input.num_rows());
+      auto const avg_len              = target_frags_per_page *
+                           cudf::detail::div_rounding_up_safe<size_t>(col_size, input.num_rows());
       if (avg_len > 0) {
-        auto const frag_size = cudf::detail::div_rounding_up_safe<size_type>(max_page_size_bytes, avg_len);
+        auto const frag_size =
+          cudf::detail::div_rounding_up_safe<size_type>(max_page_size_bytes, avg_len);
         return std::min<size_type>(max_page_fragment_size, frag_size);
       } else {
         return max_page_fragment_size;
@@ -1852,7 +1854,7 @@ auto convert_table_to_parquet_data(table_input_metadata& table_meta,
                    std::back_inserter(num_frag_in_part),
                    [max_page_fragment_size](auto const& part) {
                      return cudf::detail::div_rounding_up_safe<size_type>(part.num_rows,
-                                                                  max_page_fragment_size);
+                                                                          max_page_fragment_size);
                    });
 
     auto const num_fragments = std::reduce(num_frag_in_part.begin(), num_frag_in_part.end());

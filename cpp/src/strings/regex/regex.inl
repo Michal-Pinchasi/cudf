@@ -35,7 +35,8 @@ struct alignas(8) relist {
   CUDF_HOST_DEVICE constexpr inline static std::size_t alloc_size(int32_t insts,
                                                                   int32_t num_threads)
   {
-    return cudf::detail::round_up_unsafe<size_t>(data_size_for(insts) * num_threads, sizeof(restate));
+    return cudf::detail::round_up_unsafe<size_t>(data_size_for(insts) * num_threads,
+                                                 sizeof(restate));
   }
 
   struct alignas(16) restate {

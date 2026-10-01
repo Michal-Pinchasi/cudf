@@ -514,7 +514,8 @@ decompress_page_data(host_span<ColumnChunkDesc const> chunks,
   cuda::device_buffer<std::uint8_t> subpass_decomp_pages(
     stream,
     mr,
-    cudf::detail::round_up_safe(total_subpass_decomp_size, cudf::io::detail::BUFFER_PADDING_MULTIPLE),
+    cudf::detail::round_up_safe(total_subpass_decomp_size,
+                                cudf::io::detail::BUFFER_PADDING_MULTIPLE),
     cuda::no_init);
 
   auto comp_in =

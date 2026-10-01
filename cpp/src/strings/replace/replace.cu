@@ -285,7 +285,8 @@ std::unique_ptr<column> replace_character_parallel(strings_column_view const& in
   constexpr int64_t block_size         = 512;
   constexpr size_type bytes_per_thread = 4;
   auto const num_blocks                = cudf::detail::div_rounding_up_safe(
-    cudf::detail::div_rounding_up_safe(chars_bytes, static_cast<int64_t>(bytes_per_thread)), block_size);
+    cudf::detail::div_rounding_up_safe(chars_bytes, static_cast<int64_t>(bytes_per_thread)),
+    block_size);
   count_targets_kernel<block_size, bytes_per_thread>
     <<<num_blocks, block_size, 0, stream.get()>>>(fn, chars_bytes, d_target_count.data());
   CUDF_CUDA_TRY(cudaGetLastError());

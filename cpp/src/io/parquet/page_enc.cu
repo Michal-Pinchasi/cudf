@@ -700,9 +700,10 @@ CUDF_KERNEL void __launch_bounds__(128)
       }
       __syncwarp();
       auto const fragment_data_size =
-        (ck_g.use_dictionary) ? static_cast<size_t>(frag_g.num_leaf_values) *
-                                  cudf::detail::div_rounding_up_unsafe<size_t>(ck_g.dict_rle_bits, 8)
-                              : frag_g.fragment_data_size;
+        (ck_g.use_dictionary)
+          ? static_cast<size_t>(frag_g.num_leaf_values) *
+              cudf::detail::div_rounding_up_unsafe<size_t>(ck_g.dict_rle_bits, 8)
+          : frag_g.fragment_data_size;
 
       // TODO (dm): this convoluted logic to limit page size needs refactoring
       size_t this_max_page_size = (values_in_page * 2 >= ck_g.num_values)   ? 256 * 1024
@@ -876,7 +877,8 @@ CUDF_KERNEL void __launch_bounds__(128)
     __syncwarp();
     if (!t) {
       if (ck_g.ck_stat_size == 0 && ck_g.stats) {
-        uint32_t ck_stat_size = cudf::detail::round_up_unsafe(48 + 2 * ck_max_stats_len, page_align);
+        uint32_t ck_stat_size =
+          cudf::detail::round_up_unsafe(48 + 2 * ck_max_stats_len, page_align);
         page_offset += ck_stat_size;
         comp_page_offset += ck_stat_size;
         ck_g.ck_stat_size = ck_stat_size;

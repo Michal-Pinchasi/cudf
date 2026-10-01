@@ -446,9 +446,9 @@ void orc_init_statistics_groups(statistics_group* groups,
                                 device_2dspan<rowgroup_rows const> rowgroup_bounds,
                                 cuda::stream_ref stream)
 {
-  auto const num_blocks =
-    cudf::detail::div_rounding_up_safe<size_t>(rowgroup_bounds.size().first, init_groups_per_block) *
-    rowgroup_bounds.size().second;
+  auto const num_blocks = cudf::detail::div_rounding_up_safe<size_t>(rowgroup_bounds.size().first,
+                                                                     init_groups_per_block) *
+                          rowgroup_bounds.size().second;
 
   dim3 dim_block(init_threads_per_group, init_groups_per_block);
   gpu_init_statistics_groups<<<num_blocks, dim_block, 0, stream.get()>>>(
