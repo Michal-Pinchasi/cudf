@@ -630,6 +630,16 @@ class StringColumn(ColumnBase, Scannable):
                 "NULL_EQUALS",
                 "NULL_NOT_EQUALS",
             }:
+                if isinstance(
+                    other, StringColumn
+                ) and other._PANDAS_NA_VALUE not in {np.nan, None}:
+                    # Comparing against an NA-semantics column: like pandas,
+                    # keep nulls and use its result dtype in either order.
+                    result_source_dtype = other.dtype
+                    fill_nulls = False
+                else:
+                    result_source_dtype = self.dtype
+                    fill_nulls = self._PANDAS_NA_VALUE in {np.nan, None}
                 if isinstance(other, pa.Scalar):
                     other = pa_scalar_to_plc_scalar(other)
                 lhs_op, rhs_op = (other, self) if reflect else (self, other)
@@ -638,14 +648,13 @@ class StringColumn(ColumnBase, Scannable):
                     rhs=rhs_op,
                     op=op,
                     dtype=get_dtype_of_same_kind(
-                        self.dtype, np.dtype(np.bool_)
+                        result_source_dtype, np.dtype(np.bool_)
                     ),
                 )
-                if (
-                    self._PANDAS_NA_VALUE in {np.nan, None}
-                    and op
-                    not in {"NULL_EQUALS", "NULL_NOT_EQUALS"}
-                ):
+                if fill_nulls and op not in {
+                    "NULL_EQUALS",
+                    "NULL_NOT_EQUALS",
+                }:
                     fill = op == "__ne__"
                     result = result.fillna(fill)
                 return result

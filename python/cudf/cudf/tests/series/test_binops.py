@@ -1268,7 +1268,9 @@ def test_str_nan_semantics_comparison_fills_nulls(comparison_op):
 
     expect = comparison_op(ps, "").tolist()
     got = comparison_op(cs, "").to_arrow().to_pylist()
-    assert got == expect, f"{comparison_op.__name__}: expected {expect}, got {got}"
+    assert got == expect, (
+        f"{comparison_op.__name__}: expected {expect}, got {got}"
+    )
 
     # Second inconsistency from the issue: mixed-null column should behave
     # the same as all-null column — no nulls in the result.
@@ -1277,6 +1279,16 @@ def test_str_nan_semantics_comparison_fills_nulls(comparison_op):
     assert None not in result, (
         f"{comparison_op.__name__} on mixed-null str Series produced nulls: {result}"
     )
+
+
+def test_str_comparison_mixed_null_semantics(comparison_op):
+    a = pd.Series(["a", None, "c"], dtype="str")
+    b = pd.Series([None, "b", "c"], dtype="string")
+
+    for lhs, rhs in [(a, b), (b, a)]:
+        expect = comparison_op(lhs, rhs)
+        got = comparison_op(cudf.Series(lhs), cudf.Series(rhs))
+        assert_eq(expect, got)
 
 
 @pytest.mark.parametrize("obj_class", ["Series", "Index"])
