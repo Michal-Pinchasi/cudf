@@ -1199,7 +1199,12 @@ def test_series_compare_nulls(comparison_op, ltype, rtype):
     rmask = ~rser.isnull()
 
     got = comparison_op(lser, rser)
-    if ltype in {"datetime64[ms]", "datetime64[ns]", "timedelta64[s]"}:
+    if ltype in {
+        "datetime64[ms]",
+        "datetime64[ns]",
+        "timedelta64[s]",
+        "str",
+    }:
         expect = comparison_op(lser.to_pandas(), rser.to_pandas())
     else:
         expect_mask = np.logical_and(lmask, rmask)
@@ -2972,6 +2977,9 @@ def test_column_null_scalar_comparison(
         "datetime64"
     ) or all_supported_types_as_str.startswith("timedelta64"):
         assert not result.isnull().all()
+    elif all_supported_types_as_str == "str":
+        # NaN-semantics strings compare null as False (True for !=)
+        assert_eq(comparison_op(sr.to_pandas(), null_scalar), result)
     else:
         assert result.isnull().all()
 
